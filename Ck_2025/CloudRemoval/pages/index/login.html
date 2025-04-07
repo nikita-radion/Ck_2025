@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+    <link rel="stylesheet" href="./static/css/auth-styles.css">
+    <style>
+        body {
+            background: url('./static/videos/1479.gif') center/cover no-repeat fixed;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(61, 169, 252, 0.3);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(61, 169, 252, 0.3);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .auth-tab.active {
+            color: #3da9fc;
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #3da9fc;
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3da9fc;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 12px;
+            background: #3da9fc;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .auth-button:hover {
+            background: #2d8fd5;
+            transform: translateY(-2px);
+        }
+
+        .back-to-home {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .back-to-home:hover {
+            color: #3da9fc;
+        }
+
+        .error-message {
+            color: #ef4565;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .form-group.error .form-control {
+            border-color: #ef4565;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-tabs">
+            <div class="auth-tab active" onclick="showForm('login')">Вход</div>
+            <div class="auth-tab" onclick="showForm('register')">Регистрация</div>
+        </div>
+
+        <!-- Форма входа -->
+        <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <input type="text" class="form-control" id="loginUsername" placeholder="Имя пользователя" required>
+                <div class="error-message">Неверное имя пользователя</div>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="loginPassword" placeholder="Пароль" required>
+                <div class="error-message">Неверный пароль</div>
+            </div>
+            <button type="submit" class="auth-button">Войти</button>
+        </form>
+
+        <!-- Форма регистрации -->
+        <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <input type="text" class="form-control" id="registerUsername" placeholder="Имя пользователя" required>
+                <div class="error-message">Это имя пользователя уже занято</div>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="registerName" placeholder="Имя" required>
+                <div class="error-message">Введите корректное имя</div>
+            </div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="registerSurname" placeholder="Фамилия" required>
+                <div class="error-message">Введите корректную фамилию</div>
+            </div>
+            <div class="form-group">
+                <input type="email" class="form-control" id="registerEmail" placeholder="Email" required>
+                <div class="error-message">Неверный формат email</div>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="registerPassword" placeholder="Пароль" required>
+                <div class="error-message">Пароль должен содержать минимум 6 символов</div>
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Подтвердите пароль" required>
+                <div class="error-message">Пароли не совпадают</div>
+            </div>
+            <button type="submit" class="auth-button">Зарегистрироваться</button>
+        </form>
+
+        <a href="index.html" class="back-to-home">Вернуться на главную</a>
+    </div>
+
+    <script src="./static/js/database.js"></script>
+    <script src="./static/js/auth.js"></script>
+    <script>
+        function showForm(formType) {
+            // Убираем активный класс со всех вкладок и форм
+            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(form => form.classList.remove('active'));
+            
+            // Добавляем активный класс нужной вкладке и форме
+            document.querySelector(`.auth-tab:${formType === 'login' ? 'first-child' : 'last-child'}`).classList.add('active');
+            document.getElementById(`${formType}Form`).classList.add('active');
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            console.log('Начало процесса входа');
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            console.log('Попытка входа с username:', username);
+
+            try {
+                const user = await userDB.getUserByUsername(username);
+                console.log('Найденный пользователь:', user);
+
+                if (!user) {
+                    showError('loginUsername', 'Пользователь не найден');
+                    return;
+                }
+
+                if (user.password !== password) {
+                    showError('loginPassword', 'Неверный пароль');
+                    return;
+                }
+
+                // Сохраняем данные пользователя в sessionStorage
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+                console.log('Данные пользователя сохранены в sessionStorage');
+                
+                // Перенаправляем на главную страницу
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Ошибка при входе:', error);
+                alert('Произошла ошибка при входе');
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            console.log('Начало процесса регистрации');
+
+            const username = document.getElementById('registerUsername').value;
+            const name = document.getElementById('registerName').value;
+            const surname = document.getElementById('registerSurname').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            console.log('Собранные данные формы:', { username, name, surname, email });
+
+            // Очищаем предыдущие ошибки
+            document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+
+            try {
+                // Проверка паролей
+                if (password !== confirmPassword) {
+                    showError('confirmPassword', 'Пароли не совпадают');
+                    return;
+                }
+
+                // Проверка длины пароля
+                if (password.length < 6) {
+                    showError('registerPassword', 'Пароль должен содержать минимум 6 символов');
+                    return;
+                }
+
+                // Проверка формата email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showError('registerEmail', 'Неверный формат email');
+                    return;
+                }
+
+                // Проверка имени пользователя
+                if (username.length < 3) {
+                    showError('registerUsername', 'Имя пользователя должно содержать минимум 3 символа');
+                    return;
+                }
+
+                // Проверка имени и фамилии
+                if (name.length < 2) {
+                    showError('registerName', 'Имя должно содержать минимум 2 символа');
+                    return;
+                }
+                if (surname.length < 2) {
+                    showError('registerSurname', 'Фамилия должна содержать минимум 2 символа');
+                    return;
+                }
+
+                // Создаем нового пользователя
+                const newUser = {
+                    username,
+                    name,
+                    surname,
+                    email,
+                    password,
+                    registrationDate: new Date().toLocaleDateString()
+                };
+
+                console.log('Отправка данных пользователя в БД:', newUser);
+                
+                // Добавляем пользователя в базу данных и получаем обновленный объект с ID
+                const createdUser = await userDB.addUser(newUser);
+                console.log('Пользователь успешно создан:', createdUser);
+
+                // Сохраняем данные пользователя в sessionStorage
+                sessionStorage.setItem('currentUser', JSON.stringify(createdUser));
+                console.log('Данные сохранены в sessionStorage:', createdUser);
+                
+                // Перенаправляем на главную страницу
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Ошибка при регистрации:', error);
+                
+                if (error.message.includes('именем')) {
+                    showError('registerUsername', 'Это имя пользователя уже занято');
+                } else if (error.message.includes('email')) {
+                    showError('registerEmail', 'Этот email уже используется');
+                } else {
+                    alert('Произошла ошибка при регистрации: ' + error.message);
+                }
+            }
+        }
+
+        function showError(inputId, message) {
+            const formGroup = document.getElementById(inputId).closest('.form-group');
+            formGroup.classList.add('error');
+            formGroup.querySelector('.error-message').textContent = message;
+
+            // Убираем ошибку через 3 секунды
+            setTimeout(() => {
+                formGroup.classList.remove('error');
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 
